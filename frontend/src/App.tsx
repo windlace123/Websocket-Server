@@ -1,9 +1,33 @@
+import { useEffect, useState } from 'react'
 import './App.css'
-import { metrics, players } from './dashboardData'
+import { getServerStats, initialMetrics, players } from './dashboardData'
 import cLogo from './assets/c-logo.png'
 import cppLogo from './assets/cpp-logo.png'
 
 function App() {
+  const [metrics, setMetrics] = useState(initialMetrics)
+
+  useEffect(() => {
+    async function updateMetrics() {
+      const serverStats = await getServerStats()
+      const uptime = serverStats?.uptime
+      const uptimeValue = uptime ? `${uptime[0]}h ${uptime[1]}m ${uptime[2]}s` : 'Unavailable'
+
+      setMetrics((currentMetrics) =>
+        currentMetrics.map((metric) =>
+          metric.label === 'Server Uptime'
+            ? { ...metric, value: uptimeValue }
+            : metric,
+        ),
+      )
+    }
+
+    updateMetrics()
+    const intervalId = window.setInterval(updateMetrics, 1000)
+
+    return () => window.clearInterval(intervalId)
+  }, [])
+
   return (
     <main className="dashboard-shell">
       <div className="ambient ambient-one" />

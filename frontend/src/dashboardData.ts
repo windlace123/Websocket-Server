@@ -12,7 +12,27 @@ export type Player = {
   activity: string
 }
 
-export const metrics: Metric[] = [
+export type ServerStats = {
+  uptime?: string[]
+}
+
+export async function getServerStats(): Promise<ServerStats | null> {
+  try {
+    const response = await fetch('/server_stats', { method: 'POST' })
+
+    if (!response.ok) {
+      throw new Error(`Server stats request failed: ${response.status}`)
+    }
+
+    const dataFromServer = await response.json()
+    return typeof dataFromServer === 'string' ? JSON.parse(dataFromServer) : dataFromServer
+  } catch (error) {
+    console.error('Error loading server stats:', error)
+    return null
+  }
+}
+
+export const initialMetrics: Metric[] = [
   {
     label: 'Redis',
     value: '98.7%',
@@ -25,7 +45,7 @@ export const metrics: Metric[] = [
   },
   {
     label: 'Server Uptime',
-    value: '0h 0m 0s',
+    value: 'Loading',
     accent: 'blue',
   },
   {

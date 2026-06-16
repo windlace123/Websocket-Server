@@ -14,7 +14,7 @@ load_dotenv()
 class Settings:
     postgres_user: str | None = os.getenv("POSTGRES_USER")
     postgres_password: str | None = os.getenv("POSTGRES_PASS")
-    postgres_database: str | None = os.getenv("POSTGRES_NAME")
+    postgres_database: str | None = os.getenv("POSTGRES_DB")
     postgres_host: str | None = os.getenv("POSTGRES_HOST")
     postgres_port: int | None = os.getenv("POSTGRES_PORT")
 
@@ -25,3 +25,6 @@ class Settings:
 
 
 settings = Settings()
+
+# kubectl port-forward pod/redis-6dc9d654f8-gt6pd 6379:6379 -n default
+# kubectl port-forward pod/postgres-66b5c8cfc6-4jjnw 5432:5432 -n default
